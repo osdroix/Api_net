@@ -31,6 +31,27 @@ public class ClubConfiguration : IEntityTypeConfiguration<Club>
     }
 }
 
+public class ClubMemberConfiguration : IEntityTypeConfiguration<ClubMember>
+{
+    public void Configure(EntityTypeBuilder<ClubMember> builder)
+    {
+        // Clave compuesta: un usuario solo puede estar una vez en un club específico
+        builder.HasKey(cm => new { cm.ClubId, cm.UserId });
+        
+        // Relación con Club
+        builder.HasOne(cm => cm.Club)
+            .WithMany(c => c.ClubMembers)
+            .HasForeignKey(cm => cm.ClubId)
+            .OnDelete(DeleteBehavior.Cascade);
+            
+        // Relación con User
+        builder.HasOne(cm => cm.User)
+            .WithMany(u => u.ClubMembers)
+            .HasForeignKey(cm => cm.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+}
+
 public class BookConfiguration : IEntityTypeConfiguration<Book>
 {
     public void Configure(EntityTypeBuilder<Book> builder)

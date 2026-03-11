@@ -9,4 +9,8 @@ public interface IClubService
     Task<ClubOutDto> CreateAsync(ClubCreateDto dto);
     Task<ClubOutDto> UpdateAsync(int id, ClubCreateDto dto);
     Task DeleteAsync(int id);
+    // Gestión de miembros
+    Task AddMemberAsync(int clubId, int userId);
+    Task RemoveMemberAsync(int clubId, int userId);
+    Task<IEnumerable<UserOutDto>> GetMembersAsync(int clubId);
 }

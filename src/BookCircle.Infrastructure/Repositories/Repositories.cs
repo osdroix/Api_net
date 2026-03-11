@@ -10,6 +10,10 @@ public class UserRepository(AppDbContext db) : IUserRepository
     public Task<User?> GetByUsernameAsync(string username) =>
         db.Users.FirstOrDefaultAsync(u => u.Username == username);
 
+    // Busca un usuario por su ID
+    public Task<User?> GetByIdAsync(int id) =>
+        db.Users.FirstOrDefaultAsync(u => u.Id == id);
+
     public Task<User?> GetByEmailAsync(string email) =>
         db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
@@ -51,6 +55,36 @@ public class ClubRepository(AppDbContext db) : IClubRepository
         await db.SaveChangesAsync();
         return true;
     }
+
+    // Agrega un usuario como miembro de un club
+    public async Task AddMemberAsync(ClubMember member)
+    {
+        db.ClubMembers.Add(member);
+        await db.SaveChangesAsync();
+    }
+
+    // Elimina a un usuario de un club
+    public async Task RemoveMemberAsync(int clubId, int userId)
+    {
+        var member = await db.ClubMembers.FindAsync(clubId, userId);
+        if (member != null)
+        {
+            db.ClubMembers.Remove(member);
+            await db.SaveChangesAsync();
+        }
+    }
+
+    // Obtiene la lista de usuarios que son miembros de un club
+    public async Task<IEnumerable<User>> GetMembersAsync(int clubId) =>
+        await db.ClubMembers
+            .Where(cm => cm.ClubId == clubId)
+            .Include(cm => cm.User) // Incluimos la entidad User para retornar sus datos
+            .Select(cm => cm.User)
+            .ToListAsync();
+
+    // Verifica si un usuario ya es miembro de un club
+    public async Task<bool> IsMemberAsync(int clubId, int userId) =>
+        await db.ClubMembers.AnyAsync(cm => cm.ClubId == clubId && cm.UserId == userId);
 }
 
 public class BookRepository(AppDbContext db) : IBookRepository
