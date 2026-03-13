@@ -14,7 +14,7 @@ public record UserOutDto(int Id, string Email, string Username, string? FullName
 
 public record ClubCreateDto(string Name, string Description, string? FavoriteGenre = null, int Members = 0);
 
-public record ClubOutDto(int Id, string Name, string Description);
+public record ClubOutDto(int Id, string Name, string Description, int MemberCount);
 
 // ── Book ──────────────────────────────────────────────────────────────────────
 
