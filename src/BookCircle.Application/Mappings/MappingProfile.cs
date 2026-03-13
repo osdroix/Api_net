@@ -17,7 +17,8 @@ public class MappingProfile : Profile
 
         // Club
         CreateMap<ClubCreateDto, Club>();
-        CreateMap<Club, ClubOutDto>();
+        CreateMap<Club, ClubOutDto>()
+            .ForCtorParam("MemberCount", opt => opt.MapFrom(src => src.Members));
 
         // Book
         CreateMap<BookCreateDto, Book>();
